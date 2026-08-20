@@ -39,7 +39,7 @@
     {
       "identity" : "xcconfig",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mattmassicotte/XCConfig",
+      "location" : "https://github.com/hisaac/XCConfig",
       "state" : {
         "revision" : "fda9516ccdd073812b6d16a0bd702204b14e70a3"
       }

@@ -1,8 +1,8 @@
 class Xclint < Formula
   desc "Xcode project linting"
-  homepage "https://github.com/mattmassicotte/XCLint"
-  url "https://github.com/mattmassicotte/XCLint.git", branch: "main"
-  head "https://github.com/mattmassicotte/XCLint", branch: "main"
+  homepage "https://github.com/hisaac/XCLint"
+  url "https://github.com/hisaac/XCLint.git", branch: "main"
+  head "https://github.com/hisaac/XCLint", branch: "main"
   version "0.1.5"
 
   depends_on :xcode => ["15.0", :build]
