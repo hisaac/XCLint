@@ -1,5 +1,5 @@
 {
-  "originHash" : "250c7dfa584c4040fe03ea2e699c383785be0898249774c3673154ca4237e023",
+  "originHash" : "c048bf60a495fc26e397ab08732e49ec50a1e28f3d5d602af847f927b273a5d6",
   "pins" : [
     {
       "identity" : "aexml",
@@ -33,7 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382"
+        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+        "version" : "1.8.2"
       }
     },
     {
@@ -41,7 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hisaac/XCConfig",
       "state" : {
-        "revision" : "f8b9220ec495e85546aa9f6775f14a391cef1421"
+        "revision" : "f8b9220ec495e85546aa9f6775f14a391cef1421",
+        "version" : "0.1.0"
       }
     },
     {
@@ -49,7 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tuist/XcodeProj",
       "state" : {
-        "revision" : "cfc3234fa2a60babbd26712ac0dec0d44734c019"
+        "revision" : "cfc3234fa2a60babbd26712ac0dec0d44734c019",
+        "version" : "9.16.0"
       }
     },
     {
@@ -57,7 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/Yams.git",
       "state" : {
-        "revision" : "a27b21e0c81c5bf42049b897a62aaf387e80f279"
+        "revision" : "a27b21e0c81c5bf42049b897a62aaf387e80f279",
+        "version" : "6.2.2"
       }
     }
   ],

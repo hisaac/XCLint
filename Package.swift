@@ -10,22 +10,10 @@ let package = Package(
 		.library(name: "XCLinting", targets: ["XCLinting"]),
 	],
 	dependencies: [
-		.package(
-			url: "https://github.com/apple/swift-argument-parser",
-			revision: "6a52f3251125d74daf04fcbd5e6f08a75d074382" // 1.8.2
-		),
-		.package(
-			url: "https://github.com/hisaac/XCConfig",
-			revision: "f8b9220ec495e85546aa9f6775f14a391cef1421" // 0.1.0
-		),
-		.package(
-			url: "https://github.com/jpsim/Yams.git",
-			revision: "a27b21e0c81c5bf42049b897a62aaf387e80f279" // 6.2.2
-		),
-		.package(
-			url: "https://github.com/tuist/XcodeProj",
-			revision: "cfc3234fa2a60babbd26712ac0dec0d44734c019" // 9.16.0
-		),
+		.package(url: "https://github.com/apple/swift-argument-parser", exact: "1.8.2"),
+		.package(url: "https://github.com/hisaac/XCConfig", exact: "0.1.0"),
+		.package(url: "https://github.com/jpsim/Yams", exact: "6.2.2"),
+		.package(url: "https://github.com/tuist/XcodeProj", exact: "9.16.0"),
 	],
 	targets: [
 		.executableTarget(
