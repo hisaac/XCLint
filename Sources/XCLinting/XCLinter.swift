@@ -18,7 +18,7 @@ public struct XCLinter {
 
 	public var environment: Environment
 	public var rules: [Rule]
-	
+
 	public init(projectPath: String, configuration: Configuration) throws {
 		let env = try Environment(projectPath: projectPath, configuration: configuration)
 

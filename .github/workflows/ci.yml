@@ -2,24 +2,24 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
-      - 'CODE_OF_CONDUCT.md'
-      - '.editorconfig'
-      - '.spi.yml'
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  macos:
-    name: Test
-    runs-on: macOS-15
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_16.3.app/Contents/Developer
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.runs-on }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Test
-        run: set -o pipefail && xcodebuild -scheme XCLint-Package -destination "platform=macOS" test | xcbeautify
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
+      - run: mise run test

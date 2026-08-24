@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Matthew Massicotte on 2024-01-22.
-//
-
 import Foundation
 
 /// Detect projects that do not use XCConfigs.
