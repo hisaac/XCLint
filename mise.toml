@@ -1,0 +1,43 @@
+[settings]
+activate_aggressive = true
+experimental = true
+
+[tools]
+swift = "6.3"
+
+# tasks
+
+[tasks.bootstrap]
+alias = "up"
+run = ["mise install", "swift package resolve"]
+
+[tasks.update]
+alias = ["upd"]
+run = ["mise upgrade", "swift package update"]
+
+[tasks.upgrade]
+alias = ["upg"]
+run = ["mise upgrade --bump", "swift package update"]
+
+[tasks.build]
+alias = "b"
+run = "swift build"
+
+[tasks.test]
+alias = "t"
+run = "swift test"
+
+[tasks.check]
+alias = ["lint", "chk"]
+run = "mise fmt --check"
+
+[tasks.fix]
+alias = ["format"]
+run = "mise fmt"
+
+[tasks.clean]
+run = ["swift package clean", "swift package reset"]
+
+[tasks.nuke]
+depends = ["clean"]
+run = "swift package purge-cache"

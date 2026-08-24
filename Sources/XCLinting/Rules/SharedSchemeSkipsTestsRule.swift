@@ -63,4 +63,3 @@ struct SharedSchemeSkipsTestsRule {
 		return violations
 	}
 }
-

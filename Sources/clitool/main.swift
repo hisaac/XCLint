@@ -12,7 +12,7 @@ struct XCLintCommand: ParsableCommand {
 		help: "Print the version and exit."
 	)
 	var version: Bool = false
-	
+
 	@Argument(help: "The path to the .xcodeproj bundle to lint (defaults to looking in the current working directory).")
 	var projectFile: String?
 
@@ -42,11 +42,11 @@ struct XCLintCommand: ParsableCommand {
 		let linter = try XCLinter(environment: env)
 
 		let violations = try linter.run()
-		
+
 		for violation in violations {
 			print(violation.message)
 		}
-		
+
 		if !violations.isEmpty {
 			throw ExitCode.failure
 		}
