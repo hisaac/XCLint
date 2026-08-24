@@ -6,7 +6,7 @@ let package = Package(
 	name: "XCLint",
 	platforms: [.macOS(.v13)],
 	products: [
-		.executable(name: "xclint", targets: ["clitool"]),
+		.executable(name: "xclint", targets: ["cli"]),
 		.library(name: "XCLinting", targets: ["XCLinting"]),
 	],
 	dependencies: [
@@ -17,7 +17,7 @@ let package = Package(
 	],
 	targets: [
 		.executableTarget(
-			name: "clitool",
+			name: "cli",
 			dependencies: [
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
 				.product(name: "Yams", package: "Yams"),

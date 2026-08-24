@@ -4,6 +4,7 @@ import XcodeProj
 import XCLinting
 import Yams
 
+@main
 struct XCLintCommand: ParsableCommand {
 	static let configuration = CommandConfiguration(commandName: "xclint")
 
@@ -92,5 +93,3 @@ extension XCLintCommand {
 		return try YAMLDecoder().decode(Configuration.self, from: data)
 	}
 }
-
-XCLintCommand.main()
