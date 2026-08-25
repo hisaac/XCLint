@@ -10,6 +10,7 @@ shellcheck = "0"
 shfmt = "3"
 swift = "6"
 yamlfmt = "0"
+zizmor = "latest"
 
 [hooks]
 postinstall = "mise run bootstrap"
