@@ -16,5 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
       - run: brew tap hisaac/XCLint "$GITHUB_WORKSPACE"
+      - run: brew trust --tap hisaac/XCLint
       - run: brew install xclint
       - run: .github/scripts/verify-version.sh
