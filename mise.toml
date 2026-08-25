@@ -55,11 +55,11 @@ run = "swift run xclint"
 
 [tasks.check]
 alias = ["lint", "chk"]
-run = "mise fmt --check"
+run = "hk check --all"
 
 [tasks.fix]
 alias = ["format"]
-run = "mise fmt"
+run = "hk fix --all"
 
 [tasks.clean]
 run = ["swift package clean", "swift package reset"]

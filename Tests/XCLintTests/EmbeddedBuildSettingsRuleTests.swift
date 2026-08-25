@@ -52,4 +52,3 @@ final class EmbeddedBuildSettingsRuleTests: XCTestCase {
 		XCTAssertTrue(violations.isEmpty)
 	}
 }
-
