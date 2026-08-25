@@ -11,11 +11,35 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  install:
+  test-bot:
     runs-on: macos-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@8f3d1ec8a696b3b9d9a6c3696b6c73033cab69e4 # 2026.08.14.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Homebrew Bundler RubyGems
+        id: cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ runner.os }}-rubygems-
+
+      - name: Install Homebrew Bundler RubyGems
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: brew install-bundler-gems
+
       - run: brew tap hisaac/XCLint "$GITHUB_WORKSPACE"
       - run: brew trust --tap hisaac/XCLint
-      - run: brew install xclint
-      - run: .github/scripts/verify-version.sh
+
+      - run: brew test-bot --tap=hisaac/xclint --only-cleanup-before
+      - run: brew test-bot --tap=hisaac/xclint --only-setup
+      - run: brew test-bot --tap=hisaac/xclint --only-tap-syntax
+      - run: brew test-bot --tap=hisaac/xclint --only-formulae --skip-online-checks xclint
