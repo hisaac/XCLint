@@ -4,11 +4,14 @@ import XcodeProj
 import XCLinting
 import Yams
 
+let embeddedVersion = String(decoding: PackageResources._version, as: UTF8.self)
+	.trimmingCharacters(in: .whitespacesAndNewlines)
+
 @main
 struct XCLintCommand: ParsableCommand {
 	static let configuration = CommandConfiguration(
 		commandName: "xclint",
-		version: "0.1.5"
+		version: embeddedVersion
 	)
 
 	@Argument(help: "The path to the .xcodeproj bundle to lint (defaults to looking in the current working directory).")

@@ -22,6 +22,9 @@ let package = Package(
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
 				.product(name: "Yams", package: "Yams"),
 				"XCLinting",
+			],
+			resources: [
+				.embedInCode("../../.version"),
 			]
 		),
 		.target(
