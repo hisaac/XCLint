@@ -6,13 +6,10 @@ import Yams
 
 @main
 struct XCLintCommand: ParsableCommand {
-	static let configuration = CommandConfiguration(commandName: "xclint")
-
-	@Flag(
-		name: .shortAndLong,
-		help: "Print the version and exit."
+	static let configuration = CommandConfiguration(
+		commandName: "xclint",
+		version: "0.1.5"
 	)
-	var version: Bool = false
 
 	@Argument(help: "The path to the .xcodeproj bundle to lint (defaults to looking in the current working directory).")
 	var projectFile: String?
@@ -24,10 +21,6 @@ struct XCLintCommand: ParsableCommand {
 	var configFilePath: String?
 
 	func run() throws {
-		if version {
-			throw CleanExit.message("0.1.5")
-		}
-
 		// find the xcodeproj file
 		guard let projPath = resolvedProjectFilePath() else {
 			throw XCLintError.noProjectFileSpecified

@@ -27,6 +27,10 @@ run = "swift build"
 alias = "t"
 run = "swift test"
 
+[tasks.run]
+alias = ["r", "xclint"]
+run = "swift run xclint"
+
 [tasks.check]
 alias = ["lint", "chk"]
 run = "mise fmt --check"
