@@ -1,0 +1,37 @@
+amends "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+
+fail_fast = false
+env {
+	["HK_MISE"] = "true"
+}
+
+local linters = new Mapping<String, Step> {
+	["actionlint"] = Builtins.actionlint
+	["mise"] = Builtins.mise
+	["pkl"] = Builtins.pkl
+	["shellcheck"] = Builtins.shellcheck
+	["shfmt"] = Builtins.shfmt
+	["yamlfmt"] = Builtins.yamlfmt
+
+	// Generic linters
+	["fix-smart-quotes"] = Builtins.fix_smart_quotes
+	["mixed-line-ending"] = Builtins.mixed_line_ending
+	["newlines"] = Builtins.newlines
+	["trailing-whitespace"] = Builtins.trailing_whitespace
+}
+
+hooks {
+	["check"] {
+		steps = linters
+	}
+	["fix"] {
+		fix = true
+		steps = linters
+	}
+	["pre-commit"] {
+		fix = true
+		stash = true
+		steps = linters
+	}
+}

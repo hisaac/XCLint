@@ -3,21 +3,43 @@ activate_aggressive = true
 experimental = true
 
 [tools]
+actionlint = "latest"
+hk = "latest"
+pkl = "latest"
+shellcheck = "latest"
+shfmt = "latest"
 swift = "6.3"
+yamlfmt = "latest"
+zizmor = "latest"
+
+[hooks]
+postinstall = "mise run bootstrap"
 
 # tasks
 
 [tasks.bootstrap]
 alias = "up"
-run = ["mise install", "swift package resolve"]
+run = [
+  "mise install",
+  "hk install --mise",
+  { task = "update-hk-import" },
+  "swift package resolve",
+]
 
 [tasks.update]
 alias = ["upd"]
-run = ["mise upgrade", "swift package update"]
+run = ["mise upgrade", { task = "update-hk-import" }, "swift package update"]
 
 [tasks.upgrade]
 alias = ["upg"]
-run = ["mise upgrade --bump", "swift package update"]
+run = [
+  "mise upgrade --bump",
+  { task = "update-hk-import" },
+  "swift package update",
+]
+
+[tasks.update-hk-import]
+run = "scripts/update-hk-import.bash"
 
 [tasks.build]
 alias = "b"
