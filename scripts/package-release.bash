@@ -6,8 +6,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/common.bash" || exit 1
 
 function main() {
 	local -r version="$(tr -d '[:space:]' <"${PROJECT_ROOT}/.version")"
-	local -r dist_dir="${PROJECT_ROOT}/dist"
-	local -r archive="${dist_dir}/xclint-${version}-universal-apple-macosx.tar.gz"
+	local -r archive="${DIST_DIR}/xclint-${version}-universal-apple-macosx.tar.gz"
 
 	log_info "Building macOS universal binary for ${version} with $(swift --version | head -n 1)"
 
@@ -19,16 +18,16 @@ function main() {
 	swift build --configuration release --arch arm64
 	swift build --configuration release --arch x86_64
 
-	mkdir -p "${dist_dir}"
-	lipo -create -output "${dist_dir}/xclint" \
+	mkdir -p "${DIST_DIR}"
+	lipo -create -output "${DIST_DIR}/xclint" \
 		"${BUILD_DIR}/arm64-apple-macosx/release/xclint" \
 		"${BUILD_DIR}/x86_64-apple-macosx/release/xclint"
-	strip -rSTx "${dist_dir}/xclint"
+	strip -rSTx "${DIST_DIR}/xclint"
 
-	log_info "$(lipo -info "${dist_dir}/xclint")"
-	log_info "Binary reports version: $("${dist_dir}/xclint" --version)"
+	log_info "$(lipo -info "${DIST_DIR}/xclint")"
+	log_info "Binary reports version: $("${DIST_DIR}/xclint" --version)"
 
-	tar -czf "${archive}" -C "${dist_dir}" xclint
+	tar -czf "${archive}" -C "${DIST_DIR}" xclint
 	log_info "Packaged ${archive}"
 }
 

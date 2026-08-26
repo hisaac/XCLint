@@ -45,7 +45,10 @@ function init() {
 
 	# Set project-specific environment variables
 	: "${PROJECT_ROOT:="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"}"
+	export PROJECT_ROOT
+
 	: "${BUILD_DIR:="${PROJECT_ROOT}/.build"}"
-	export PROJECT_ROOT BUILD_DIR
+	: "${DIST_DIR:="${PROJECT_ROOT}/dist"}"
+	export BUILD_DIR DIST_DIR
 }
 init
