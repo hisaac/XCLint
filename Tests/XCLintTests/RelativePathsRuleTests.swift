@@ -24,8 +24,8 @@ struct RelativePathsRuleTests {
 	}
 
 	@Test
-	func projectWithOneAbosluteFilePath() throws {
-		let url = try Bundle.module.testDataURL(named: "AbsolueFileReference.xcodeproj")
+	func projectWithOneAbsoluteFilePath() throws {
+		let url = try Bundle.module.testDataURL(named: "AbsoluteFileReference.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
 
