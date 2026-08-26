@@ -54,8 +54,8 @@ run = "swift test"
 alias = ["r", "xclint"]
 run = "swift run xclint"
 
-[tasks.package-release]
-run = "scripts/package-release.bash"
+[tasks.package]
+run = "scripts/package.bash"
 
 [tasks.check]
 alias = ["lint", "chk"]

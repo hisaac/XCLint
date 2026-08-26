@@ -24,7 +24,7 @@ jobs:
         with:
           install_args: swift
           cache: false
-      - run: mise run package-release
+      - run: mise run package
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: xclint-macos-universal
