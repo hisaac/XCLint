@@ -14,6 +14,7 @@ local linters = new Mapping<String, Step> {
 	["shfmt"] = Builtins.shfmt
 	["swiftlint"] = Builtins.swiftlint
 	["yamlfmt"] = Builtins.yamlfmt
+	["zizmor"] = Builtins.zizmor
 
 	// Generic linters
 	["fix-smart-quotes"] = Builtins.fix_smart_quotes

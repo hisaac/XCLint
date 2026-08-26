@@ -11,9 +11,10 @@ shfmt = "3"
 swift = "6"
 swiftlint = "0"
 yamlfmt = "0"
+zizmor = "1"
 
 [hooks]
-postinstall = "mise run bootstrap"
+postinstall = 'test -n "$CI" || mise run bootstrap'
 
 # tasks
 
