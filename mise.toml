@@ -54,6 +54,15 @@ run = "swift test"
 alias = ["r", "xclint"]
 run = "swift run xclint"
 
+[tasks.package-macos]
+run = "scripts/package-macos.bash"
+
+[tasks.package-linux]
+run = "scripts/package-linux.bash"
+
+[tasks.update-formula]
+run = "scripts/update-formula.bash"
+
 [tasks.check]
 alias = ["lint", "chk"]
 run = "hk check --all"

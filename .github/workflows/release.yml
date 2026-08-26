@@ -1,17 +1,165 @@
 ---
 name: Release
 
-on: workflow_dispatch
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+"]
 
 permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Must match the toolchain mise resolves for `swift` in mise.toml. If that
+  # floats to a new Swift release, update both of these together (the checksum
+  # is published alongside the SDK on swift.org).
+  SWIFT_STATIC_SDK_URL: https://download.swift.org/swift-6.3.3-release/static-sdk/swift-6.3.3-RELEASE/swift-6.3.3-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz
+  SWIFT_STATIC_SDK_CHECKSUM: 87c3eaf908e67c0e13a84367119e12273cec1d2cd3d81f7d74bb36722d6b607b
 
 jobs:
-  release:
-    name: Release
+  verify:
+    name: Verify Tag
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
-      - run: echo "not yet implemented"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check tag matches .version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="$(tr -d '[:space:]' <.version)"
+          if [[ "${version}" != "${TAG}" ]]; then
+            echo "::error::.version is '${version}' but the tag is '${TAG}'. Bump .version and re-tag."
+            exit 1
+          fi
+          echo "Tag ${TAG} matches .version"
+
+  test:
+    name: Test
+    needs: verify
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  build-macos:
+    name: Build macOS
+    needs: test
+    # macOS 26 is required: the macos-15 image tops out at Xcode 26.3 / Swift
+    # 6.2.3, which cannot parse this package's swift-tools-version: 6.3.
+    runs-on: macos-26
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
+        with:
+          # Only Swift is needed to build; skip the lint/format tooling that the
+          # rest of mise.toml pins.
+          install_args: swift
+          # Release binaries are built from a clean toolchain rather than a
+          # restored cache, so a poisoned cache cannot reach a published artifact.
+          cache: false
+      - run: mise run package-macos
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: macos
+          path: dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 5
+
+  build-linux:
+    name: Build Linux
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
+        with:
+          # Only Swift is needed to build; skip the lint/format tooling that the
+          # rest of mise.toml pins.
+          install_args: swift
+          # Release binaries are built from a clean toolchain rather than a
+          # restored cache, so a poisoned cache cannot reach a published artifact.
+          cache: false
+      - name: Install Swift Static Linux SDK
+        run: swift sdk install "${SWIFT_STATIC_SDK_URL}" --checksum "${SWIFT_STATIC_SDK_CHECKSUM}"
+      - run: mise run package-linux
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: linux
+          path: dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 5
+
+  release:
+    name: Publish Release
+    needs: [build-macos, build-linux]
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+    outputs:
+      macos_sha256: ${{ steps.checksums.outputs.macos_sha256 }}
+      linux_sha256: ${{ steps.checksums.outputs.linux_sha256 }}
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Compute checksums
+        id: checksums
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          macos="$(sha256sum "dist/xclint-${TAG}-universal-apple-macosx.tar.gz" | cut -d' ' -f1)"
+          linux="$(sha256sum "dist/xclint-${TAG}-x86_64-linux-static.tar.gz" | cut -d' ' -f1)"
+          echo "macos_sha256=${macos}" >>"${GITHUB_OUTPUT}"
+          echo "linux_sha256=${linux}" >>"${GITHUB_OUTPUT}"
+          sha256sum dist/*.tar.gz
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "${TAG}" --title "${TAG}" --generate-notes dist/*.tar.gz
+
+  update-formula:
+    name: Update Formula
+    needs: release
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Point formula at the new release
+        env:
+          TAG: ${{ github.ref_name }}
+          MACOS_SHA256: ${{ needs.release.outputs.macos_sha256 }}
+          LINUX_SHA256: ${{ needs.release.outputs.linux_sha256 }}
+        run: scripts/update-formula.bash "${TAG}" "${MACOS_SHA256}" "${LINUX_SHA256}"
+      - name: Commit and push
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |-
+          if git diff --quiet -- Formula/xclint.rb; then
+            echo "Formula already up to date, nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/xclint.rb
+          git commit -m "Point Homebrew formula at ${TAG}"
+          git push origin HEAD:main

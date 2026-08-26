@@ -12,6 +12,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `mise run test` | `t` | `swift test` |
 | `mise run run` | `r`, `xclint` | `swift run xclint` |
 | `mise run check` | `lint`, `chk` | `hk check --all` |
+| `mise run package-macos` | | universal macOS binary + tarball into `dist/` |
+| `mise run package-linux` | | static Linux binary + tarball into `dist/` (needs the Static Linux SDK) |
 | `mise run fix` | `format` | `hk fix --all` |
 | `mise run update` | `upd` | upgrade tools, refresh hk import pins, `swift package update` |
 | `mise run clean` / `nuke` | | `swift package clean`/`reset`, then `purge-cache` |
@@ -54,9 +56,15 @@ Tests are XCTest (not swift-testing) and fixture-driven. Each rule test loads a 
 
 Testing a new rule generally means authoring a new fixture `.xcodeproj` (often just a hand-edited `project.pbxproj`) rather than writing more Swift.
 
-## Versioning
+## Versioning and releases
 
-`.version` at the repo root is the single source of truth. It is embedded into the binary via `.embedInCode("../../.version")` and read at runtime as `PackageResources._version` to feed ArgumentParser's `--version`; `Formula/xclint.rb` reads the same file for the Homebrew version. Bump the version by editing `.version` only.
+`.version` at the repo root is the single source of truth. It is embedded into the binary via `.embedInCode("../../.version")` and read at runtime as `PackageResources._version` to feed ArgumentParser's `--version`. Bump the version by editing `.version` only.
+
+Releasing is manual-trigger, automated-execution: bump `.version` on `main`, then push a matching unprefixed tag (`0.1.6`, not `v0.1.6`). `.github/workflows/release.yml` fires on that tag and refuses to proceed if the tag and `.version` disagree. It then runs the CI workflow against the tag, builds a universal macOS binary and a static Linux binary, creates the GitHub release with `--generate-notes`, and commits a `Formula/xclint.rb` update pointing at the new assets.
+
+`Formula/xclint.rb` no longer reads `.version` or builds from source — it installs a prebuilt binary, and its `version`/`url`/`sha256` fields are rewritten mechanically by `scripts/update-formula.bash`. Edit the formula's structure freely, but leave those field *shapes* intact: the script matches the two `url` lines by their filename suffix and the two `sha256` lines positionally (macOS first, Linux second). `brew install --HEAD xclint` still builds from `main` and needs a Swift 6.3+ toolchain.
+
+Note that `swift build --arch arm64 --arch x86_64` does **not** work on this package: multi-arch routes through the Xcode build system, which does not generate the `PackageResources` accessor that `.embedInCode` needs. `scripts/package-macos.bash` builds each slice separately and `lipo`s them.
 
 ## hk
 

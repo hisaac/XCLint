@@ -15,6 +15,10 @@ brew tap hisaac/XCLint https://github.com/hisaac/XCLint.git
 brew install xclint
 ```
 
+This installs a prebuilt binary — a universal binary on macOS, a fully static one on Linux. To build from source off `main` instead, use `brew install --HEAD xclint` (requires a Swift 6.3+ toolchain).
+
+Prebuilt binaries are also attached to every [release](https://github.com/hisaac/XCLint/releases) if you'd rather not use Homebrew.
+
 Package:
 
 ```swift
