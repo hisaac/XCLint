@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `mise run test` | `t` | `swift test` |
 | `mise run run` | `r`, `xclint` | `swift run xclint` |
 | `mise run check` | `lint`, `chk` | `hk check --all` |
-| `mise run package-release` | | universal macOS binary + tarball into `dist/` |
+| `mise run package-release` | | universal macOS binary + tarball into `.release/` |
 | `mise run fix` | `format` | `hk fix --all` |
 | `mise run update` | `upd` | upgrade tools, refresh hk import pins, `swift package update` |
 | `mise run clean` / `nuke` | | `swift package clean`/`reset`, then `purge-cache` |

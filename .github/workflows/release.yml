@@ -28,5 +28,8 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: xclint-macos-universal
-          path: dist/*.tar.gz
+          path: .release/*.tar.gz
+          # .release is a dot-directory, and upload-artifact treats anything
+          # under one as hidden and skips it unless this is set.
+          include-hidden-files: true
           if-no-files-found: error

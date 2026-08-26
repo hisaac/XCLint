@@ -48,7 +48,7 @@ function init() {
 	export PROJECT_ROOT
 
 	: "${BUILD_DIR:="${PROJECT_ROOT}/.build"}"
-	: "${DIST_DIR:="${PROJECT_ROOT}/dist"}"
-	export BUILD_DIR DIST_DIR
+	: "${RELEASE_DIR:="${PROJECT_ROOT}/.release"}"
+	export BUILD_DIR RELEASE_DIR
 }
 init
