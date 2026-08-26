@@ -10,10 +10,8 @@ struct TargetsUseXCConfigRule {
 
 		// check targets
 		environment.project.pbxproj.enumerateBuildConfigurations { name, configList in
-			for config in configList.buildConfigurations {
-				if config.baseConfiguration?.path == nil {
-					violations.append(.init("No xcconfig set for \(name), \(config.name)"))
-				}
+			for config in configList.buildConfigurations where config.baseConfiguration?.path == nil {
+				violations.append(.init("No xcconfig set for \(name), \(config.name)"))
 			}
 		}
 

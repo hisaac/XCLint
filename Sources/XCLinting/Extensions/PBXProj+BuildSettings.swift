@@ -36,7 +36,7 @@ extension PBXProj {
 
 	func enumerateBuildSettingStatements(
 		rootURL: URL,
-		_ block: (PBXProject, PBXTarget, XCBuildConfiguration, [BuildSetting: String]) throws -> Void
+		_ block: (PBXProject, PBXTarget, XCBuildConfiguration, [XCConfigBuildSetting: String]) throws -> Void
 	) throws {
 		let sourceRootPath = rootURL.path
 
@@ -58,7 +58,7 @@ extension PBXProj {
 						target: config.buildSettingsAssignments
 					)
 
-					let settings: [BuildSetting: String]
+					let settings: [XCConfigBuildSetting: String]
 
 					do {
 						settings = try Evaluator().evaluate(heirarchy)

@@ -8,3 +8,6 @@ excluded:
 disabled_rules:
   - trailing_comma
   - unused_closure_parameter
+
+nesting:
+  type_level: 2

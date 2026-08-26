@@ -37,7 +37,12 @@ extension Configuration {
 				}
 			}
 
-			throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "failed to decode rule configuration object"))
+			throw DecodingError.dataCorrupted(
+				.init(
+					codingPath: decoder.codingPath,
+					debugDescription: "failed to decode rule configuration object"
+				)
+			)
 		}
 	}
 }
@@ -112,16 +117,12 @@ extension Configuration: Decodable {
 	public func validate() throws {
 		let allIdentifiers = XCLinter.ruleIdentifiers
 
-		for id in disabledRules {
-			if allIdentifiers.contains(id) == false {
-				throw XCLintError.unrecognizedRuleName(id)
-			}
+		for id in disabledRules where allIdentifiers.contains(id) == false {
+			throw XCLintError.unrecognizedRuleName(id)
 		}
 
-		for id in optInRules {
-			if allIdentifiers.contains(id) == false {
-				throw XCLintError.unrecognizedRuleName(id)
-			}
+		for id in optInRules where allIdentifiers.contains(id) == false {
+			throw XCLintError.unrecognizedRuleName(id)
 		}
 	}
 }

@@ -8,19 +8,17 @@ struct EmbeddedBuildSettingsRule {
 
 		// check top-level
 		for project in environment.project.pbxproj.projects {
-			for config in project.buildConfigurationList?.buildConfigurations ?? [] {
-				if config.buildSettings.isEmpty == false {
-					violations.append(.init("found settings for project \(project.name), \(config.name)"))
-				}
+			let configs = project.buildConfigurationList?.buildConfigurations ?? []
+
+			for config in configs where config.buildSettings.isEmpty == false {
+				violations.append(.init("found settings for project \(project.name), \(config.name)"))
 			}
 		}
 
 		// check targets
 		environment.project.pbxproj.enumerateBuildConfigurations { name, configList in
-			for config in configList.buildConfigurations {
-				if config.buildSettings.isEmpty == false {
-					violations.append(.init("found settings for target \(name), \(config.name)"))
-				}
+			for config in configList.buildConfigurations where config.buildSettings.isEmpty == false {
+				violations.append(.init("found settings for target \(name), \(config.name)"))
 			}
 		}
 

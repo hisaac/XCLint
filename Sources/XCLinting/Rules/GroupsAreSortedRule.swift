@@ -32,7 +32,8 @@ struct GroupsAreSortedRule {
 			) == .orderedAscending
 		}
 
-		// some groups have no path, like the auto-generated "Products". Let's skip those, as they appear to not even always show up in the UI.
+		// some groups have no path, like the auto-generated "Products".
+		// Let's skip those, as they appear to not even always show up in the UI.
 		if children != sortedChildren, let path = group.path {
 			violations.append(.init("Group \"\(path)\" contains unsorted children"))
 		}

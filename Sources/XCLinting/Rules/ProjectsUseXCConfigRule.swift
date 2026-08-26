@@ -6,10 +6,10 @@ struct ProjectsUseXCConfigRule {
 		var violations = [Violation]()
 
 		for project in environment.project.pbxproj.projects {
-			for config in project.buildConfigurationList?.buildConfigurations ?? [] {
-				if config.baseConfiguration?.path == nil {
-					violations.append(.init("No xcconfig set for \(project.name), \(config.name)"))
-				}
+			let configs = project.buildConfigurationList?.buildConfigurations ?? []
+
+			for config in configs where config.baseConfiguration?.path == nil {
+				violations.append(.init("No xcconfig set for \(project.name), \(config.name)"))
 			}
 		}
 

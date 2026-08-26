@@ -22,7 +22,7 @@ CI (`.github/workflows/ci.yml`) runs `mise run test` on both `macos-latest` and 
 
 ## Linting and formatting
 
-`hk` drives lint/format via `hk.pkl`. Its first two lines pin the hk package URL to the installed hk version and are rewritten mechanically by `scripts/update-hk-import.bash` (`mise run update-hk-import`) — edit hk.pkl from line 3 down only. The `linters` mapping in `hk.pkl` is currently empty, so `mise run check` is effectively a no-op even though mise installs swiftlint, shfmt, actionlint, yamlfmt, and zizmor.
+`hk` drives lint/format via `hk.pkl`. Its first two lines pin the hk package URL to the installed hk version and are rewritten mechanically by `scripts/update-hk-import.bash` (`mise run update-hk-import`) — edit hk.pkl from line 3 down only. The `linters` mapping in `hk.pkl` drives the `check`, `fix`, and `pre-commit` hooks alike, so adding an entry there wires it into all three. `swiftlint` (config in `.swiftlint.yml`) runs over `**/*.swift`; note that `swiftlint lint` exits 0 on warning-severity violations, so only error-severity ones fail `mise run check`.
 
 `.editorconfig` sets tabs for indentation everywhere except YAML (2 spaces). Swift sources use tabs.
 
