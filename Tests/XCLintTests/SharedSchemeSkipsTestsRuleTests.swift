@@ -1,22 +1,12 @@
-import Foundation
 import Testing
 
 @testable import XCLinting
-import XcodeProj
 
 @Suite
 struct SharedSchemeSkipsTestsRuleTests {
 	@Test
 	func projectWithNoSkippedTests() throws {
-		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+		let env = try XCLinter.Environment.fixture(named: "StockMacOSApp.xcodeproj")
 
 		let violations = try SharedSchemeSkipsTestsRule().run(env)
 
@@ -25,15 +15,7 @@ struct SharedSchemeSkipsTestsRuleTests {
 
 	@Test
 	func projectWithSkippedTests() throws {
-		let url = try Bundle.module.testDataURL(named: "SchemeSkipsTests.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+		let env = try XCLinter.Environment.fixture(named: "SchemeSkipsTests.xcodeproj")
 
 		let violations = try SharedSchemeSkipsTestsRule().run(env)
 
@@ -42,15 +24,7 @@ struct SharedSchemeSkipsTestsRuleTests {
 
 	@Test
 	func projectWithSkippedTestBundles() throws {
-		let url = try Bundle.module.testDataURL(named: "SchemeSkipsTestBundles.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+		let env = try XCLinter.Environment.fixture(named: "SchemeSkipsTestBundles.xcodeproj")
 
 		let violations = try SharedSchemeSkipsTestsRule().run(env)
 
