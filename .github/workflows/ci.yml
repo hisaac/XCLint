@@ -42,3 +42,5 @@ jobs:
         with:
           install_args: zizmor
       - run: zizmor --format=github .
+        env:
+          ZIZMOR_GITHUB_TOKEN: ${{ github.token }}
