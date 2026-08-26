@@ -13,9 +13,7 @@ concurrency:
 jobs:
   package:
     name: Package macOS
-    # macOS 26 is required: the macos-15 image tops out at Xcode 26.3 / Swift
-    # 6.2.3, which cannot parse this package's swift-tools-version: 6.3.
-    runs-on: macos-26
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -29,7 +27,5 @@ jobs:
         with:
           name: xclint-macos-universal
           path: .release/*.tar.gz
-          # .release is a dot-directory, and upload-artifact treats anything
-          # under one as hidden and skips it unless this is set.
           include-hidden-files: true
           if-no-files-found: error
