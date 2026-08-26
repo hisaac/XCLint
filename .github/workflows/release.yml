@@ -1,0 +1,17 @@
+---
+name: Release
+
+on: workflow_dispatch
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-slim
+    steps:
+      - run: echo "not yet implemented"
