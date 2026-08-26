@@ -3,14 +3,13 @@ activate_aggressive = true
 experimental = true
 
 [tools]
-actionlint = "latest"
-hk = "latest"
-pkl = "latest"
-shellcheck = "latest"
-shfmt = "latest"
-swift = "6.3"
-yamlfmt = "latest"
-zizmor = "latest"
+actionlint = "1"
+hk = "1"
+pkl = "0"
+shellcheck = "0"
+shfmt = "3"
+swift = "6"
+yamlfmt = "0"
 
 [hooks]
 postinstall = "mise run bootstrap"
