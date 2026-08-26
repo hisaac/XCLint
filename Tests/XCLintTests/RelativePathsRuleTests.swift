@@ -36,4 +36,3 @@ final class RelativePathsRuleTests: XCTestCase {
 		XCTAssertFalse(violations.isEmpty)
 	}
 }
-

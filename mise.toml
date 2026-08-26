@@ -3,21 +3,42 @@ activate_aggressive = true
 experimental = true
 
 [tools]
-swift = "6.3"
+actionlint = "1"
+hk = "1"
+pkl = "0"
+shellcheck = "0"
+shfmt = "3"
+swift = "6"
+yamlfmt = "0"
+
+[hooks]
+postinstall = "mise run bootstrap"
 
 # tasks
 
 [tasks.bootstrap]
 alias = "up"
-run = ["mise install", "swift package resolve"]
+run = [
+  "mise install",
+  "hk install --mise",
+  { task = "update-hk-import" },
+  "swift package resolve",
+]
 
 [tasks.update]
 alias = ["upd"]
-run = ["mise upgrade", "swift package update"]
+run = ["mise upgrade", { task = "update-hk-import" }, "swift package update"]
 
 [tasks.upgrade]
 alias = ["upg"]
-run = ["mise upgrade --bump", "swift package update"]
+run = [
+  "mise upgrade --bump",
+  { task = "update-hk-import" },
+  "swift package update",
+]
+
+[tasks.update-hk-import]
+run = "scripts/update-hk-import.bash"
 
 [tasks.build]
 alias = "b"
@@ -33,11 +54,11 @@ run = "swift run xclint"
 
 [tasks.check]
 alias = ["lint", "chk"]
-run = "mise fmt --check"
+run = "hk check --all"
 
 [tasks.fix]
 alias = ["format"]
-run = "mise fmt"
+run = "hk fix --all"
 
 [tasks.clean]
 run = ["swift package clean", "swift package reset"]

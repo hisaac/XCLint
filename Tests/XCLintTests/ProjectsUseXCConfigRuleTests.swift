@@ -36,4 +36,3 @@ final class ProjectsUseXCConfigRuleTests: XCTestCase {
 		XCTAssertTrue(violations.isEmpty)
 	}
 }
-
