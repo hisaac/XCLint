@@ -4,15 +4,12 @@ class Xclint < Formula
 	version "0.1.5"
 	license "BSD-3-Clause"
 
-	on_macos do
-		url "https://github.com/hisaac/XCLint/releases/download/0.1.5/xclint-0.1.5-universal-apple-macosx.tar.gz"
-		sha256 "0000000000000000000000000000000000000000000000000000000000000000"
-	end
+	url "https://github.com/hisaac/XCLint/releases/download/0.1.5/xclint-0.1.5-universal-apple-macosx.tar.gz"
+	sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
-	on_linux do
-		url "https://github.com/hisaac/XCLint/releases/download/0.1.5/xclint-0.1.5-x86_64-unknown-linux-gnu.tar.gz"
-		sha256 "0000000000000000000000000000000000000000000000000000000000000000"
-	end
+	# macOS only for now. A distributable Linux binary is blocked upstream: see
+	# the versioning section of CLAUDE.md.
+	depends_on :macos
 
 	# `brew install --HEAD xclint` builds from main instead of downloading a
 	# release binary. It needs a Swift 6.3+ toolchain on PATH (see .version and
