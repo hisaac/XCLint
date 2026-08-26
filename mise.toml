@@ -11,9 +11,13 @@ shfmt = "3"
 swift = "6"
 swiftlint = "0"
 yamlfmt = "0"
+zizmor = "1"
 
 [hooks]
-postinstall = "mise run bootstrap"
+# `bootstrap` provisions a developer machine: it installs git hooks, rewrites the
+# hk import pins, and resolves packages. CI installs tools directly and must not
+# mutate the checkout, so skip it there.
+postinstall = 'test -n "$CI" || mise run bootstrap'
 
 # tasks
 
