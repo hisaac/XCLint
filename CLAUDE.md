@@ -13,15 +13,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `mise run run` | `r`, `xclint` | `swift run xclint` |
 | `mise run check` | `lint`, `chk` | `hk check --all` |
 | `mise run package-macos` | | universal macOS binary + tarball into `dist/` |
-| `mise run package-linux` | | Linux binary + tarball into `dist/` (Linux only; **not** part of releases) |
-| `mise run package-linux-container` | | runs `package-linux` on macOS via Apple's `container` |
 | `mise run fix` | `format` | `hk fix --all` |
 | `mise run update` | `upd` | upgrade tools, refresh hk import pins, `swift package update` |
 | `mise run clean` / `nuke` | | `swift package clean`/`reset`, then `purge-cache` |
 
 Run a single test with an XCTest filter, e.g. `swift test --filter GroupsAreSortedRuleTests/testProjectWithoutGroupsSorted`, or a whole case with `swift test --filter GroupsAreSortedRuleTests`.
 
-CI (`.github/workflows/ci.yml`) runs `mise run test` on both `macos-latest` and `ubuntu-latest`, so changes must build and pass on Linux as well as macOS.
+CI (`.github/workflows/ci.yml`) runs `mise run test` on `macos-latest`, plus a `zizmor` job that lints the workflows. This project is macOS-only: there is no Linux build, test, or release artifact.
 
 ## Linting and formatting
 
@@ -63,16 +61,14 @@ Testing a new rule generally means authoring a new fixture `.xcodeproj` (often j
 
 Releasing is manual-trigger, automated-execution: bump `.version` on `main`, then push a matching unprefixed tag (`0.1.6`, not `v0.1.6`). `.github/workflows/release.yml` fires on that tag and refuses to proceed if the tag and `.version` disagree. It then runs the CI workflow against the tag, builds a universal macOS binary, creates the GitHub release with `--generate-notes`, and commits a `Formula/xclint.rb` update pointing at the new asset.
 
-`Formula/xclint.rb` no longer reads `.version` or builds from source — it installs a prebuilt binary, and its `version`/`url`/`sha256` fields are rewritten mechanically by `scripts/update-formula.bash`. Edit the formula's structure freely, but leave those field *shapes* intact: the script matches the two `url` lines by their filename suffix and the two `sha256` lines positionally (macOS first, Linux second). `brew install --HEAD xclint` still builds from `main` and needs a Swift 6.3+ toolchain.
+`Formula/xclint.rb` no longer reads `.version` or builds from source — it installs a prebuilt binary, and its `version`/`url`/`sha256` are rewritten by `brew bump-formula-pr --write-only` in the release workflow. `brew install --HEAD xclint` still builds from `main` and needs a Swift 6.3+ toolchain.
+
+Note that the formula is indented with **2 spaces, not tabs** (see the `[*.rb]` block in `.editorconfig`). This is not cosmetic: `bump-formula-pr` locates stanzas with regexes that assume Homebrew's own style, and against a tab-indented formula it fails with `Error: Could not find 'sha256' stanza!`. The command also only works on a formula inside a git-backed tap that has a remote, which is why the workflow taps this repo and copies the edited file back rather than editing the checkout in place.
 
 Two build constraints are worth knowing before touching the packaging scripts:
 
 - `swift build --arch arm64 --arch x86_64` does **not** work on this package: multi-arch routes through the Xcode build system, which does not generate the `PackageResources` accessor that `.embedInCode` needs. `scripts/package-macos.bash` builds each slice separately and `lipo`s them.
-- **Releases are macOS-only.** `swift test` runs on Linux in CI and must keep passing, but no Linux binary is published, and `Formula/xclint.rb` declares `depends_on :macos`.
-
-  Two things block a good Linux artifact. The Swift **Static Linux SDK (musl) does not work**: PathKit, pulled in by XcodeProj, does `#if os(Linux) import Glibc`, and musl has no `Glibc` module — `os(Linux)` is true under musl, so it takes the wrong branch. PathKit 1.0.1 is its latest release and XcodeProj 9.16.0 still depends on it, so there is nothing to upgrade into. The fallback, a glibc build with `-static-stdlib`, works but links `libicuuc.so.74` and glibc dynamically, pinning it to Ubuntu 24.04-era distros at 58 MB.
-
-  `scripts/package-linux.bash` and `mise run package-linux-container` (which runs it on macOS via Apple's `container`) are kept and working, so this is easy to pick back up. Unblocking it properly means an upstream PathKit PR swapping `#if os(Linux)` for `#if canImport(Glibc)` / `#elseif canImport(Musl)`.
+- **macOS-only, deliberately.** No Linux build, test, or release artifact. If you are ever tempted to add one back, know what blocks it: the Swift Static Linux SDK (musl) fails because PathKit, pulled in by XcodeProj, does `#if os(Linux) import Glibc` — `os(Linux)` is true under musl, but musl's platform module is named `Musl`, so it takes a branch that cannot compile. PathKit 1.0.1 is its latest release and XcodeProj 9.16.0 still depends on it. The glibc fallback (`-static-stdlib`) does build, but links `libicuuc.so.74` and glibc dynamically, pinning it to Ubuntu 24.04-era distros at 58 MB against macOS's 5.7 MB. The real unblock is an upstream PathKit PR using `#if canImport(Glibc)` / `#elseif canImport(Musl)`.
 
 ## hk
 

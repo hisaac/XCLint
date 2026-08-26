@@ -98,7 +98,7 @@ jobs:
   update-formula:
     name: Update Formula
     needs: release
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
@@ -106,11 +106,24 @@ jobs:
         with:
           ref: main
           persist-credentials: true
+      - uses: Homebrew/actions/setup-homebrew@a657b8b0cd35d0f65cce41fce9b24cf054b49869 # 2026.08.24.1
       - name: Point formula at the new release
         env:
           TAG: ${{ github.ref_name }}
           MACOS_SHA256: ${{ needs.release.outputs.macos_sha256 }}
-        run: scripts/update-formula.bash "${TAG}" "${MACOS_SHA256}"
+        run: |
+          # bump-formula-pr only operates on a formula inside a git-backed tap
+          # with a remote, so tap this repo and edit the formula there, then
+          # copy the result back into the checkout we are going to commit from.
+          brew tap hisaac/xclint https://github.com/hisaac/XCLint.git
+          brew bump-formula-pr \
+            --write-only --no-audit --no-browse \
+            --version="${TAG}" \
+            --url="https://github.com/hisaac/XCLint/releases/download/${TAG}/xclint-${TAG}-universal-apple-macosx.tar.gz" \
+            --sha256="${MACOS_SHA256}" \
+            hisaac/xclint/xclint
+          cp "$(brew --repository hisaac/xclint)/Formula/xclint.rb" Formula/xclint.rb
+          git diff -- Formula/xclint.rb
       - name: Commit and push
         env:
           TAG: ${{ github.ref_name }}

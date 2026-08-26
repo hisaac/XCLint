@@ -21,13 +21,7 @@ concurrency:
 jobs:
   test:
     name: Test
-    strategy:
-      fail-fast: false
-      matrix:
-        runs-on:
-          - macos-latest
-          - ubuntu-latest
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
