@@ -7,12 +7,6 @@ indent_style = tab
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{yaml,yml}]
-indent_size = 2
-indent_style = space
-
-# Homebrew formulas must use its standard 2-space style: `brew bump-formula-pr`
-# fails to locate the url/sha256 stanzas in a tab-indented formula.
-[*.rb]
+[*.{rb,yaml,yml}]
 indent_size = 2
 indent_style = space
