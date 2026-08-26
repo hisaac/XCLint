@@ -57,6 +57,8 @@ struct BuildFilesAreOrderedRule {
 		return start.upperBound..<end.lowerBound
 	}
 
+	// the pattern is a literal, so this can only fail if the pattern itself is malformed
+	// swiftlint:disable:next force_try
 	private let lineRegex = try! NSRegularExpression(pattern: #"^\s*([A-Z0-9]{24})\s+\/\*\s([^\*]*)\s\*\/"#, options: [])
 
 	/// This function will find the `Substring` for the id of the PBXBuildFile or PBXFileReference

@@ -9,6 +9,7 @@ pkl = "0"
 shellcheck = "0"
 shfmt = "3"
 swift = "6"
+swiftlint = "0"
 yamlfmt = "0"
 
 [hooks]

@@ -2,7 +2,6 @@ import Foundation
 
 import XcodeProj
 import XCConfig
-import enum XCConfig.BuildSetting
 
 /// Detect build settings that are deprecated or no longer functional.
 struct ValidateBuildSettingsRule {
@@ -16,7 +15,7 @@ struct ValidateBuildSettingsRule {
 		return violations
 	}
 
-	func evaluateTargetSettings(_ targetName: String, settings: [BuildSetting: String]) -> [Violation] {
+	func evaluateTargetSettings(_ targetName: String, settings: [XCConfigBuildSetting: String]) -> [Violation] {
 		var violations = [Violation]()
 
 		for (setting, value) in settings {
@@ -38,7 +37,7 @@ struct ValidateBuildSettingsRule {
 
 	func enumerateSettings(
 		with environment: XCLinter.Environment,
-		block: (PBXTarget, XCBuildConfiguration, [BuildSetting: String]) throws -> Void
+		block: (PBXTarget, XCBuildConfiguration, [XCConfigBuildSetting: String]) throws -> Void
 	) throws {
 		let project = environment.project
 		let sourceRootURL = environment.projectRootURL.deletingLastPathComponent()

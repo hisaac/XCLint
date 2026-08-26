@@ -4,6 +4,9 @@ import XcodeProj
 import XCLinting
 import Yams
 
+// non-failable decoding is deliberate;
+// the version file is embedded at build time, so there is no failure to handle here
+// swiftlint:disable:next optional_data_string_conversion
 let embeddedVersion = String(decoding: PackageResources._version, as: UTF8.self)
 	.trimmingCharacters(in: .whitespacesAndNewlines)
 

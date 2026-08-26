@@ -12,6 +12,7 @@ local linters = new Mapping<String, Step> {
 	["pkl"] = Builtins.pkl
 	["shellcheck"] = Builtins.shellcheck
 	["shfmt"] = Builtins.shfmt
+	["swiftlint"] = Builtins.swiftlint
 	["yamlfmt"] = Builtins.yamlfmt
 
 	// Generic linters
