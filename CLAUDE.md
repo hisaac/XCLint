@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `mise run test` | `t` | `swift test` |
 | `mise run run` | `r`, `xclint` | `swift run xclint` |
 | `mise run check` | `lint`, `chk` | `hk check --all` |
-| `mise run package-macos` | | universal macOS binary + tarball into `dist/` |
+| `mise run package-release` | | universal macOS binary + tarball into `dist/` |
 | `mise run fix` | `format` | `hk fix --all` |
 | `mise run update` | `upd` | upgrade tools, refresh hk import pins, `swift package update` |
 | `mise run clean` / `nuke` | | `swift package clean`/`reset`, then `purge-cache` |
@@ -59,9 +59,9 @@ Testing a new rule generally means authoring a new fixture `.xcodeproj` (often j
 
 `.version` at the repo root is the single source of truth. It is embedded into the binary via `.embedInCode("../../.version")` and read at runtime as `PackageResources._version` to feed ArgumentParser's `--version`; `Formula/xclint.rb` reads the same file for the Homebrew version. Bump the version by editing `.version` only.
 
-`.github/workflows/release.yml` is `workflow_dispatch`-only. It runs `mise run package-macos` and uploads the resulting tarball as a workflow artifact — nothing more. It does not tag, cut a GitHub release, or touch the formula; those are still manual. `Formula/xclint.rb` still builds from `main` at install time.
+`.github/workflows/release.yml` is `workflow_dispatch`-only. It runs `mise run package-release` and uploads the resulting tarball as a workflow artifact — nothing more. It does not tag, cut a GitHub release, or touch the formula; those are still manual. `Formula/xclint.rb` still builds from `main` at install time.
 
-Two constraints are worth knowing before touching `scripts/package-macos.bash`:
+Two constraints are worth knowing before touching `scripts/package-release.bash`:
 
 - `swift build --arch arm64 --arch x86_64` does **not** work on this package: multi-arch routes through the Xcode build system, which does not generate the `PackageResources` accessor that `.embedInCode` needs. The script builds each slice separately and `lipo`s them.
 - The macOS runner must be `macos-26` or newer. The `macos-15` image tops out at Xcode 26.3 / Swift 6.2.3, which cannot parse this package's `swift-tools-version: 6.3` (Xcode 26.4 was the first with Swift 6.3).
