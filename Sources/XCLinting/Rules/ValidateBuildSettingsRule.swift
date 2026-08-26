@@ -2,7 +2,6 @@ import Foundation
 
 import XcodeProj
 import XCConfig
-import enum XCConfig.BuildSetting
 
 /// Detect build settings that are deprecated or no longer functional.
 struct ValidateBuildSettingsRule {

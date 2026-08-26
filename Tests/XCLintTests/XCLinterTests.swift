@@ -13,7 +13,6 @@ final class XCLinterTests: XCTestCase {
 		}
 	}
 
-
 	func testMissingProjectFileThrowsError() throws {
 		do {
 			_ = try XCLinter(projectPath: "/dev/null", configuration: Configuration())

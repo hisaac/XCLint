@@ -1,0 +1,10 @@
+---
+# https://github.com/realm/swiftlint#configuration
+
+excluded:
+  - .build
+  - DerivedData
+
+disabled_rules:
+  - trailing_comma
+  - unused_closure_parameter
