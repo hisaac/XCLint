@@ -6,16 +6,12 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_call:
 
 permissions:
   contents: read
 
 concurrency:
-  # Literal prefix rather than ${{ github.workflow }}: when this workflow is
-  # called by Release, github.workflow resolves to the *caller's* name, which
-  # would put the called run in the same group as the run waiting on it.
-  group: ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
