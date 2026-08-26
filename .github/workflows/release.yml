@@ -73,21 +73,15 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       contents: write
-    outputs:
-      macos_sha256: ${{ steps.checksums.outputs.macos_sha256 }}
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: dist
           merge-multiple: true
-      - name: Compute checksums
-        id: checksums
-        env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          macos="$(sha256sum "dist/xclint-${TAG}-universal-apple-macosx.tar.gz" | cut -d' ' -f1)"
-          echo "macos_sha256=${macos}" >>"${GITHUB_OUTPUT}"
-          sha256sum dist/*.tar.gz
+      - name: Log checksums
+        # Recorded for the audit trail only. The formula's sha256 is computed
+        # separately by bump-formula-pr from the published asset.
+        run: sha256sum dist/*.tar.gz
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -110,17 +104,19 @@ jobs:
       - name: Point formula at the new release
         env:
           TAG: ${{ github.ref_name }}
-          MACOS_SHA256: ${{ needs.release.outputs.macos_sha256 }}
         run: |
           # bump-formula-pr only operates on a formula inside a git-backed tap
           # with a remote, so tap this repo and edit the formula there, then
           # copy the result back into the checkout we are going to commit from.
+          #
+          # --sha256 is deliberately omitted: brew downloads the asset it is
+          # about to pin and hashes that, so the checksum describes the bytes
+          # GitHub actually serves rather than a local copy of them.
           brew tap hisaac/xclint https://github.com/hisaac/XCLint.git
           brew bump-formula-pr \
             --write-only --no-audit --no-browse \
             --version="${TAG}" \
             --url="https://github.com/hisaac/XCLint/releases/download/${TAG}/xclint-${TAG}-universal-apple-macosx.tar.gz" \
-            --sha256="${MACOS_SHA256}" \
             hisaac/xclint/xclint
           cp "$(brew --repository hisaac/xclint)/Formula/xclint.rb" Formula/xclint.rb
           git diff -- Formula/xclint.rb

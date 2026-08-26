@@ -63,7 +63,7 @@ Releasing is manual-trigger, automated-execution: bump `.version` on `main`, the
 
 `Formula/xclint.rb` no longer reads `.version` or builds from source — it installs a prebuilt binary, and its `version`/`url`/`sha256` are rewritten by `brew bump-formula-pr --write-only` in the release workflow. `brew install --HEAD xclint` still builds from `main` and needs a Swift 6.3+ toolchain.
 
-Note that the formula is indented with **2 spaces, not tabs** (see the `[*.rb]` block in `.editorconfig`). This is not cosmetic: `bump-formula-pr` locates stanzas with regexes that assume Homebrew's own style, and against a tab-indented formula it fails with `Error: Could not find 'sha256' stanza!`. The command also only works on a formula inside a git-backed tap that has a remote, which is why the workflow taps this repo and copies the edited file back rather than editing the checkout in place.
+Note that the formula is indented with **2 spaces, not tabs** (`.editorconfig` groups `.rb` with the YAML files). This is not cosmetic: `bump-formula-pr` locates stanzas with regexes that assume Homebrew's own style, and against a tab-indented formula it fails with `Error: Could not find 'sha256' stanza!`. The command also only works on a formula inside a git-backed tap that has a remote, which is why the workflow taps this repo and copies the edited file back rather than editing the checkout in place.
 
 Two build constraints are worth knowing before touching the packaging scripts:
 
