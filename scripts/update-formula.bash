@@ -30,7 +30,7 @@ function main() {
 	sed \
 		-e "s|^\(\tversion \).*|\1\"${version}\"|" \
 		-e "s|^\(\t\turl \"\).*\(/xclint-\)[^\"]*\(-universal-apple-macosx\.tar\.gz\"\)|\1${base_url}\2${version}\3|" \
-		-e "s|^\(\t\turl \"\).*\(/xclint-\)[^\"]*\(-x86_64-linux-static\.tar\.gz\"\)|\1${base_url}\2${version}\3|" \
+		-e "s|^\(\t\turl \"\).*\(/xclint-\)[^\"]*\(-x86_64-unknown-linux-gnu\.tar\.gz\"\)|\1${base_url}\2${version}\3|" \
 		"${formula_path}" >"${temp_path}"
 
 	# The two sha256 lines are positional: the first belongs to the on_macos

@@ -13,7 +13,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `mise run run` | `r`, `xclint` | `swift run xclint` |
 | `mise run check` | `lint`, `chk` | `hk check --all` |
 | `mise run package-macos` | | universal macOS binary + tarball into `dist/` |
-| `mise run package-linux` | | static Linux binary + tarball into `dist/` (needs the Static Linux SDK) |
+| `mise run package-linux` | | Linux binary + tarball into `dist/` (Linux only) |
+| `mise run package-linux-container` | | runs `package-linux` on macOS via Apple's `container` |
 | `mise run fix` | `format` | `hk fix --all` |
 | `mise run update` | `upd` | upgrade tools, refresh hk import pins, `swift package update` |
 | `mise run clean` / `nuke` | | `swift package clean`/`reset`, then `purge-cache` |
@@ -64,7 +65,10 @@ Releasing is manual-trigger, automated-execution: bump `.version` on `main`, the
 
 `Formula/xclint.rb` no longer reads `.version` or builds from source — it installs a prebuilt binary, and its `version`/`url`/`sha256` fields are rewritten mechanically by `scripts/update-formula.bash`. Edit the formula's structure freely, but leave those field *shapes* intact: the script matches the two `url` lines by their filename suffix and the two `sha256` lines positionally (macOS first, Linux second). `brew install --HEAD xclint` still builds from `main` and needs a Swift 6.3+ toolchain.
 
-Note that `swift build --arch arm64 --arch x86_64` does **not** work on this package: multi-arch routes through the Xcode build system, which does not generate the `PackageResources` accessor that `.embedInCode` needs. `scripts/package-macos.bash` builds each slice separately and `lipo`s them.
+Two build constraints are worth knowing before touching the packaging scripts:
+
+- `swift build --arch arm64 --arch x86_64` does **not** work on this package: multi-arch routes through the Xcode build system, which does not generate the `PackageResources` accessor that `.embedInCode` needs. `scripts/package-macos.bash` builds each slice separately and `lipo`s them.
+- The Swift **Static Linux SDK (musl) does not work either**. PathKit, pulled in by XcodeProj, does `#if os(Linux) import Glibc`, and musl has no `Glibc` module. PathKit 1.0.1 is its latest release and XcodeProj 9.16.0 still depends on it, so there is nothing to upgrade into. The Linux binary is therefore a glibc build with `-static-stdlib` (Swift runtime baked in; glibc, ICU and libxml2 still dynamic), built on `ubuntu-24.04` — that image version is the compatibility floor we ship.
 
 ## hk
 

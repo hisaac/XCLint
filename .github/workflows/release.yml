@@ -11,13 +11,6 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
 
-env:
-  # Must match the toolchain mise resolves for `swift` in mise.toml. If that
-  # floats to a new Swift release, update both of these together (the checksum
-  # is published alongside the SDK on swift.org).
-  SWIFT_STATIC_SDK_URL: https://download.swift.org/swift-6.3.3-release/static-sdk/swift-6.3.3-RELEASE/swift-6.3.3-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz
-  SWIFT_STATIC_SDK_CHECKSUM: 87c3eaf908e67c0e13a84367119e12273cec1d2cd3d81f7d74bb36722d6b607b
-
 jobs:
   verify:
     name: Verify Tag
@@ -77,7 +70,9 @@ jobs:
   build-linux:
     name: Build Linux
     needs: test
-    runs-on: ubuntu-latest
+    # Pinned rather than ubuntu-latest: the binary links glibc, ICU and libxml2
+    # dynamically, so the image version is the compatibility baseline we ship.
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
@@ -92,8 +87,6 @@ jobs:
           # Release binaries are built from a clean toolchain rather than a
           # restored cache, so a poisoned cache cannot reach a published artifact.
           cache: false
-      - name: Install Swift Static Linux SDK
-        run: swift sdk install "${SWIFT_STATIC_SDK_URL}" --checksum "${SWIFT_STATIC_SDK_CHECKSUM}"
       - run: mise run package-linux
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -122,7 +115,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           macos="$(sha256sum "dist/xclint-${TAG}-universal-apple-macosx.tar.gz" | cut -d' ' -f1)"
-          linux="$(sha256sum "dist/xclint-${TAG}-x86_64-linux-static.tar.gz" | cut -d' ' -f1)"
+          linux="$(sha256sum "dist/xclint-${TAG}-x86_64-unknown-linux-gnu.tar.gz" | cut -d' ' -f1)"
           echo "macos_sha256=${macos}" >>"${GITHUB_OUTPUT}"
           echo "linux_sha256=${linux}" >>"${GITHUB_OUTPUT}"
           sha256sum dist/*.tar.gz

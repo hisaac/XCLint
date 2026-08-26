@@ -10,7 +10,7 @@ class Xclint < Formula
 	end
 
 	on_linux do
-		url "https://github.com/hisaac/XCLint/releases/download/0.1.5/xclint-0.1.5-x86_64-linux-static.tar.gz"
+		url "https://github.com/hisaac/XCLint/releases/download/0.1.5/xclint-0.1.5-x86_64-unknown-linux-gnu.tar.gz"
 		sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 	end
 
