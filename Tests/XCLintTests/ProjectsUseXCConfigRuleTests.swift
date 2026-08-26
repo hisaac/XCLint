@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class ProjectsUseXCConfigRuleTests: XCTestCase {
-	func testProjectsWithoutXCConfigs() throws {
+@Suite
+struct ProjectsUseXCConfigRuleTests {
+	@Test
+	func projectsWithoutXCConfigs() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -17,10 +20,11 @@ final class ProjectsUseXCConfigRuleTests: XCTestCase {
 
 		let violations = try ProjectsUseXCConfigRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectsWithOnlyXCConfigs() throws {
+	@Test
+	func projectsWithOnlyXCConfigs() throws {
 		let url = try Bundle.module.testDataURL(named: "ProjectsUseXCConfigFiles.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -33,6 +37,6 @@ final class ProjectsUseXCConfigRuleTests: XCTestCase {
 
 		let violations = try ProjectsUseXCConfigRule().run(env)
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 }

@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class SharedSchemeSkipsTestsRuleTests: XCTestCase {
-	func testProjectWithNoSkippedTests() throws {
+@Suite
+struct SharedSchemeSkipsTestsRuleTests {
+	@Test
+	func projectWithNoSkippedTests() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -17,10 +20,11 @@ final class SharedSchemeSkipsTestsRuleTests: XCTestCase {
 
 		let violations = try SharedSchemeSkipsTestsRule().run(env)
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 
-	func testProjectWithSkippedTests() throws {
+	@Test
+	func projectWithSkippedTests() throws {
 		let url = try Bundle.module.testDataURL(named: "SchemeSkipsTests.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -33,10 +37,11 @@ final class SharedSchemeSkipsTestsRuleTests: XCTestCase {
 
 		let violations = try SharedSchemeSkipsTestsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectWithSkippedTestBundles() throws {
+	@Test
+	func projectWithSkippedTestBundles() throws {
 		let url = try Bundle.module.testDataURL(named: "SchemeSkipsTestBundles.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -49,6 +54,6 @@ final class SharedSchemeSkipsTestsRuleTests: XCTestCase {
 
 		let violations = try SharedSchemeSkipsTestsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 }

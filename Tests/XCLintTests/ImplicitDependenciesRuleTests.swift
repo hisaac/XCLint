@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class ImplicitDependenciesRuleTests: XCTestCase {
-	func testProjectWithImplicitDependencies() throws {
+@Suite
+struct ImplicitDependenciesRuleTests {
+	@Test
+	func projectWithImplicitDependencies() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -17,10 +20,11 @@ final class ImplicitDependenciesRuleTests: XCTestCase {
 
 		let violations = try ImplicitDependenciesRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectWithImplicitDependenciesDisabled() throws {
+	@Test
+	func projectWithImplicitDependenciesDisabled() throws {
 		let url = try Bundle.module.testDataURL(named: "ImplicitDependenciesDisabled.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -33,6 +37,6 @@ final class ImplicitDependenciesRuleTests: XCTestCase {
 
 		let violations = try ImplicitDependenciesRule().run(env)
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 }

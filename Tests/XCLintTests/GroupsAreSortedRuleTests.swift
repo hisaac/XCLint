@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class GroupsAreSortedRuleTests: XCTestCase {
-	func testProjectWithGroupsSorted() throws {
+@Suite
+struct GroupsAreSortedRuleTests {
+	@Test
+	func projectWithGroupsSorted() throws {
 		let url = try Bundle.module.testDataURL(named: "SortedGroups.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -16,10 +19,11 @@ final class GroupsAreSortedRuleTests: XCTestCase {
 		)
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 
-	func testProjectWithoutGroupsSorted() throws {
+	@Test
+	func projectWithoutGroupsSorted() throws {
 		let url = try Bundle.module.testDataURL(named: "UnsortedGroups.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -31,10 +35,11 @@ final class GroupsAreSortedRuleTests: XCTestCase {
 		)
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectWithoutGroupsSortedByReference() throws {
+	@Test
+	func projectWithoutGroupsSortedByReference() throws {
 		let url = try Bundle.module.testDataURL(named: "SortedGroupsByReference.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -46,10 +51,11 @@ final class GroupsAreSortedRuleTests: XCTestCase {
 		)
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 
-	func testGroupSortedWhereExtensionsMatters() throws {
+	@Test
+	func groupSortedWhereExtensionsMatters() throws {
 		let url = try Bundle.module.testDataURL(named: "FileOrderedWithExtensions.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -61,6 +67,6 @@ final class GroupsAreSortedRuleTests: XCTestCase {
 		)
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 }

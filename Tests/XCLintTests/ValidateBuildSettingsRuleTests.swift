@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class ValidateBuildSettingsRuleTests: XCTestCase {
-	func testProjectWithNoInvalidBuildSettings() throws {
+@Suite
+struct ValidateBuildSettingsRuleTests {
+	@Test
+	func projectWithNoInvalidBuildSettings() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -17,10 +20,11 @@ final class ValidateBuildSettingsRuleTests: XCTestCase {
 
 		let violations = try ValidateBuildSettingsRule().run(env)
 
-		XCTAssertEqual(violations, [])
+		#expect(violations == [])
 	}
 
-	func testProjectWithInvalidBuildSettings() throws {
+	@Test
+	func projectWithInvalidBuildSettings() throws {
 		// This has ALWAYS_SEARCH_USER_PATHS set to YES at the project level
 		let url = try Bundle.module.testDataURL(named: "InvalidEmbeddedBuildSettings.xcodeproj")
 
@@ -34,10 +38,11 @@ final class ValidateBuildSettingsRuleTests: XCTestCase {
 
 		let violations = try ValidateBuildSettingsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testInvalidSettingsInXCConfigFile() throws {
+	@Test
+	func invalidSettingsInXCConfigFile() throws {
 		let url = try Bundle.module.testDataURL(named: "XCConfigFiles.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -50,6 +55,6 @@ final class ValidateBuildSettingsRuleTests: XCTestCase {
 
 		let violations = try ValidateBuildSettingsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 }

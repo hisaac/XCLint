@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class EmbeddedBuildSettingsRuleTests: XCTestCase {
-	func testProjectWithBuildSettings() throws {
+@Suite
+struct EmbeddedBuildSettingsRuleTests {
+	@Test
+	func projectWithBuildSettings() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -17,10 +20,11 @@ final class EmbeddedBuildSettingsRuleTests: XCTestCase {
 
 		let violations = try EmbeddedBuildSettingsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectWithProjectLevelBuildSettingsOnly() throws {
+	@Test
+	func projectWithProjectLevelBuildSettingsOnly() throws {
 		let url = try Bundle.module.testDataURL(named: "ProjectOnlyBuildSettings.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -33,10 +37,11 @@ final class EmbeddedBuildSettingsRuleTests: XCTestCase {
 
 		let violations = try EmbeddedBuildSettingsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectWithBuildSettingsRemoved() throws {
+	@Test
+	func projectWithBuildSettingsRemoved() throws {
 		let url = try Bundle.module.testDataURL(named: "BuildSettingsRemoved.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -49,6 +54,6 @@ final class EmbeddedBuildSettingsRuleTests: XCTestCase {
 
 		let violations = try EmbeddedBuildSettingsRule().run(env)
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 }

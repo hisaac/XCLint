@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class SharedSchemesRuleTests: XCTestCase {
-	func testProjectWithSharedSchemes() throws {
+@Suite
+struct SharedSchemesRuleTests {
+	@Test
+	func projectWithSharedSchemes() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -17,10 +20,11 @@ final class SharedSchemesRuleTests: XCTestCase {
 
 		let violations = try SharedSchemesRule().run(env)
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 
-	func testProjectWithMissingSharedSchemes() throws {
+	@Test
+	func projectWithMissingSharedSchemes() throws {
 		let url = try Bundle.module.testDataURL(named: "BuildFilesOutOfOrder.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -33,6 +37,6 @@ final class SharedSchemesRuleTests: XCTestCase {
 
 		let violations = try SharedSchemesRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 }

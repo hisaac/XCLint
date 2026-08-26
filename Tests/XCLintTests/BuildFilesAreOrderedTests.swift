@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class BuildFilesAreOrderedTests: XCTestCase {
-	func testProjectWithOrderedFiles() throws {
+@Suite
+struct BuildFilesAreOrderedTests {
+	@Test
+	func projectWithOrderedFiles() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -19,10 +22,11 @@ final class BuildFilesAreOrderedTests: XCTestCase {
 
 		let violations = try rules.flatMap { try $0(env) }
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 
-	func testProjectWithOutOfOrderFiles() throws {
+	@Test
+	func projectWithOutOfOrderFiles() throws {
 		let url = try Bundle.module.testDataURL(named: "BuildFilesOutOfOrder.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -37,6 +41,6 @@ final class BuildFilesAreOrderedTests: XCTestCase {
 
 		let violations = try rules.flatMap { try $0(env) }
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 }

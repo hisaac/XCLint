@@ -1,23 +1,24 @@
-import XCTest
+import Testing
 import XCLinting
 
-final class XCLinterTests: XCTestCase {
-
-	func testEmptyProjectPathThrowsError() throws {
-		do {
+@Suite
+struct XCLinterTests {
+	@Test
+	func emptyProjectPathThrowsError() throws {
+		let error = try #require(throws: XCLintError.self) {
 			_ = try XCLinter(projectPath: "", configuration: Configuration())
-			XCTFail("expected XCLintError.noProjectFileSpecified for an empty project path")
-		} catch XCLintError.noProjectFileSpecified {
-		} catch {
-			XCTFail("wrong error: \(error)")
+		}
+
+		guard case .noProjectFileSpecified = error else {
+			Issue.record("wrong error: \(error)")
+			return
 		}
 	}
 
-	func testMissingProjectFileThrowsError() throws {
-		do {
+	@Test
+	func missingProjectFileThrowsError() {
+		#expect(throws: (any Error).self) {
 			_ = try XCLinter(projectPath: "/dev/null", configuration: Configuration())
-			XCTFail("expected an error for a project path that is not an Xcode project")
-		} catch {
 		}
 	}
 }

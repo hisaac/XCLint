@@ -1,10 +1,13 @@
-import XCTest
+import Foundation
+import Testing
 
 @testable import XCLinting
 import XcodeProj
 
-final class RelativePathsRuleTests: XCTestCase {
-	func testProjectWithOnlyRelativePaths() throws {
+@Suite
+struct RelativePathsRuleTests {
+	@Test
+	func projectWithOnlyRelativePaths() throws {
 		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -17,10 +20,11 @@ final class RelativePathsRuleTests: XCTestCase {
 
 		let violations = try RelativePathsRule().run(env)
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 
-	func testProjectWithOneAbosluteFilePath() throws {
+	@Test
+	func projectWithOneAbosluteFilePath() throws {
 		let url = try Bundle.module.testDataURL(named: "AbsolueFileReference.xcodeproj")
 
 		let project = try XcodeProj(pathString: url.path)
@@ -33,6 +37,6 @@ final class RelativePathsRuleTests: XCTestCase {
 
 		let violations = try RelativePathsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 }
