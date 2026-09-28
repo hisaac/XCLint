@@ -1,5 +1,5 @@
 {
-  "originHash" : "890013a5356a7f38859fd319adb25ae02b1ffc57131dd266edfe3f9215e94e69",
+  "originHash" : "8ee1c334afa1f5a08b66ff9764d5859615a4aba0be4326a6a9ad9386e44ba0ed",
   "pins" : [
     {
       "identity" : "aexml",
@@ -47,18 +47,27 @@
       }
     },
     {
+      "identity" : "xcode-project-format",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/xcode-project-format.git",
+      "state" : {
+        "revision" : "c132630aabf40f6d6c3f7bb004595d2e5a28ea42",
+        "version" : "0.1.0"
+      }
+    },
+    {
       "identity" : "xcodeproj",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tuist/XcodeProj",
       "state" : {
-        "revision" : "cfc3234fa2a60babbd26712ac0dec0d44734c019",
-        "version" : "9.16.0"
+        "revision" : "aeea2e97376cd69fbdd1c7e68664b79a1a641dde",
+        "version" : "9.17.5"
       }
     },
     {
       "identity" : "yams",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jpsim/Yams.git",
+      "location" : "https://github.com/jpsim/Yams",
       "state" : {
         "revision" : "a27b21e0c81c5bf42049b897a62aaf387e80f279",
         "version" : "6.2.2"
