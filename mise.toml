@@ -1,10 +1,12 @@
 [settings]
 activate_aggressive = true
 experimental = true
+lockfile = true
+minimum_release_age = "0"
 
 [tools]
 actionlint = "1"
-hk = "1"
+hk = "2"
 pkl = "0"
 shellcheck = "0"
 shfmt = "3"
@@ -14,33 +16,20 @@ yamlfmt = "0"
 zizmor = "1"
 
 [hooks]
-postinstall = 'test -n "$CI" || mise run bootstrap'
+postinstall = 'mise run bootstrap'
 
 # tasks
 
 [tasks.bootstrap]
-alias = "up"
-run = [
-  "mise install",
-  "hk install --mise",
-  { task = "update-hk-import" },
-  "swift package resolve",
-]
+run = [{ task = "_bootstrap_hk" }, "swift package resolve", "mise lock"]
 
-[tasks.update]
-alias = ["upd"]
-run = ["mise upgrade", { task = "update-hk-import" }, "swift package update"]
+[tasks.upd]
+alias = ["update"]
+run = ["mise upgrade", "swift package update"]
 
-[tasks.upgrade]
-alias = ["upg"]
-run = [
-  "mise upgrade --bump",
-  { task = "update-hk-import" },
-  "swift package update",
-]
-
-[tasks.update-hk-import]
-run = "scripts/update-hk-import.bash"
+[tasks.upg]
+alias = ["upgrade"]
+run = ["mise upgrade --bump", "swift package update"]
 
 [tasks.build]
 alias = "b"
@@ -68,3 +57,11 @@ run = ["swift package clean", "swift package reset"]
 [tasks.nuke]
 depends = ["clean"]
 run = "swift package purge-cache"
+
+# Hidden Tasks
+
+[tasks._bootstrap_hk]
+hide = true
+run = ["hk install --mise", "scripts/update-hk-import.bash"]
+sources = ["hk.pkl", "mise.lock", "mise.toml", "scripts/update-hk-import.bash"]
+outputs = { auto = true }
