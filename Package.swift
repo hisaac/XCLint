@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
 	name: "XCLint",
-	platforms: [.macOS(.v13)],
+	platforms: [.macOS(.v14)],
 	products: [
 		.executable(name: "xclint", targets: ["cli"]),
 		.library(name: "XCLinting", targets: ["XCLinting"]),
