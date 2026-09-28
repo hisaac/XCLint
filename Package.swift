@@ -13,7 +13,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-argument-parser", exact: "1.8.2"),
 		.package(url: "https://github.com/hisaac/XCConfig", exact: "0.1.0"),
 		.package(url: "https://github.com/jpsim/Yams", exact: "6.2.2"),
-		.package(url: "https://github.com/tuist/XcodeProj", exact: "9.16.0"),
+		.package(url: "https://github.com/tuist/XcodeProj", exact: "9.17.5"),
 	],
 	targets: [
 		.executableTarget(
