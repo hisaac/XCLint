@@ -1,12 +1,12 @@
-amends "package://github.com/jdx/hk/releases/download/v1.56.1/hk@1.56.1#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.56.1/hk@1.56.1#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 
 fail_fast = false
 env {
-	["HK_MISE"] = "true"
+	["HK_MISE"] = "1"
 }
 
-local linters = new Mapping<String, Step> {
+steps {
 	["actionlint"] = Builtins.actionlint
 	["mise"] = Builtins.mise
 	["pkl"] = Builtins.pkl
@@ -21,19 +21,4 @@ local linters = new Mapping<String, Step> {
 	["mixed-line-ending"] = Builtins.mixed_line_ending
 	["newlines"] = Builtins.newlines
 	["trailing-whitespace"] = Builtins.trailing_whitespace
-}
-
-hooks {
-	["check"] {
-		steps = linters
-	}
-	["fix"] {
-		fix = true
-		steps = linters
-	}
-	["pre-commit"] {
-		fix = true
-		stash = "git"
-		steps = linters
-	}
 }
