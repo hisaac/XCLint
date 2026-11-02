@@ -1,17 +1,21 @@
-import XCTest
+import Foundation
+import Testing
 
 import XCLinting
 
-final class ConfigurationTests: XCTestCase {
-	func testReadEmptyFile() throws {
+@Suite
+struct ConfigurationTests {
+	@Test
+	func readEmptyFile() throws {
 		let string = "{}"
 
 		let config = try JSONDecoder().decode(Configuration.self, from: Data(string.utf8))
 
-		XCTAssertEqual(config, Configuration())
+		#expect(config == Configuration())
 	}
 
-	func testReadDisabledRules() throws {
+	@Test
+	func readDisabledRules() throws {
 		let string = """
 {
 	"disabled_rules": ["a", "b", "c"]
@@ -22,10 +26,11 @@ final class ConfigurationTests: XCTestCase {
 
 		let expected = Configuration(disabledRules: Set(["a", "b", "c"]))
 
-		XCTAssertEqual(config, expected)
+		#expect(config == expected)
 	}
 
-	func testReadOptInRules() throws {
+	@Test
+	func readOptInRules() throws {
 		let string = """
 {
 	"opt_in_rules": ["a", "b", "c"]
@@ -36,10 +41,11 @@ final class ConfigurationTests: XCTestCase {
 
 		let expected = Configuration(optInRules: Set(["a", "b", "c"]))
 
-		XCTAssertEqual(config, expected)
+		#expect(config == expected)
 	}
 
-	func testReadRules() throws {
+	@Test
+	func readRules() throws {
 		let string = """
 {
 	"rule1": "warning",
@@ -54,6 +60,6 @@ final class ConfigurationTests: XCTestCase {
 			"rule2": .error
 		])
 
-		XCTAssertEqual(config, expected)
+		#expect(config == expected)
 	}
 }

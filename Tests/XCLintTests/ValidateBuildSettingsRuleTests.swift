@@ -1,55 +1,34 @@
-import XCTest
+import Testing
 
 @testable import XCLinting
-import XcodeProj
 
-final class ValidateBuildSettingsRuleTests: XCTestCase {
-	func testProjectWithNoInvalidBuildSettings() throws {
-		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+@Suite
+struct ValidateBuildSettingsRuleTests {
+	@Test
+	func projectWithNoInvalidBuildSettings() throws {
+		let env = try XCLinter.Environment.fixture(named: "StockMacOSApp.xcodeproj")
 
 		let violations = try ValidateBuildSettingsRule().run(env)
 
-		XCTAssertEqual(violations, [])
+		#expect(violations.isEmpty)
 	}
 
-	func testProjectWithInvalidBuildSettings() throws {
+	@Test
+	func projectWithInvalidBuildSettings() throws {
 		// This has ALWAYS_SEARCH_USER_PATHS set to YES at the project level
-		let url = try Bundle.module.testDataURL(named: "InvalidEmbeddedBuildSettings.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+		let env = try XCLinter.Environment.fixture(named: "InvalidEmbeddedBuildSettings.xcodeproj")
 
 		let violations = try ValidateBuildSettingsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testInvalidSettingsInXCConfigFile() throws {
-		let url = try Bundle.module.testDataURL(named: "XCConfigFiles.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+	@Test
+	func invalidSettingsInXCConfigFile() throws {
+		let env = try XCLinter.Environment.fixture(named: "XCConfigFiles.xcodeproj")
 
 		let violations = try ValidateBuildSettingsRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 }
