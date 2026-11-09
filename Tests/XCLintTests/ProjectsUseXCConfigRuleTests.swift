@@ -1,38 +1,24 @@
-import XCTest
+import Testing
 
 @testable import XCLinting
-import XcodeProj
 
-final class ProjectsUseXCConfigRuleTests: XCTestCase {
-	func testProjectsWithoutXCConfigs() throws {
-		let url = try Bundle.module.testDataURL(named: "StockMacOSApp.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+@Suite
+struct ProjectsUseXCConfigRuleTests {
+	@Test
+	func projectsWithoutXCConfigs() throws {
+		let env = try XCLinter.Environment.fixture(named: "StockMacOSApp.xcodeproj")
 
 		let violations = try ProjectsUseXCConfigRule().run(env)
 
-		XCTAssertFalse(violations.isEmpty)
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectsWithOnlyXCConfigs() throws {
-		let url = try Bundle.module.testDataURL(named: "ProjectsUseXCConfigFiles.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+	@Test
+	func projectsWithOnlyXCConfigs() throws {
+		let env = try XCLinter.Environment.fixture(named: "ProjectsUseXCConfigFiles.xcodeproj")
 
 		let violations = try ProjectsUseXCConfigRule().run(env)
 
-		XCTAssertTrue(violations.isEmpty)
+		#expect(violations.isEmpty)
 	}
 }
