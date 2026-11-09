@@ -1,8 +1,7 @@
 [settings]
 activate_aggressive = true
 experimental = true
-lockfile = true
-minimum_release_age = "0"
+minimum_release_age = "0s"
 
 [tools]
 actionlint = "1"
@@ -21,7 +20,7 @@ postinstall = 'mise run bootstrap'
 # tasks
 
 [tasks.bootstrap]
-run = [{ task = "_bootstrap_hk" }, "swift package resolve", "mise lock"]
+run = [{ task = "_bootstrap_hk" }, "swift package resolve"]
 
 [tasks.upd]
 alias = ["update"]
@@ -63,5 +62,3 @@ run = "swift package purge-cache"
 [tasks._bootstrap_hk]
 hide = true
 run = ["hk install --mise", "scripts/update-hk-import.bash"]
-sources = ["hk.pkl", "mise.lock", "mise.toml", "scripts/update-hk-import.bash"]
-outputs = { auto = true }
