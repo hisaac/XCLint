@@ -16,7 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `mise run update` | `upd` | upgrade tools, refresh hk import pins, `swift package update` |
 | `mise run clean` / `nuke` | | `swift package clean`/`reset`, then `purge-cache` |
 
-Run a single test with an XCTest filter, e.g. `swift test --filter GroupsAreSortedRuleTests/testProjectWithoutGroupsSorted`, or a whole case with `swift test --filter GroupsAreSortedRuleTests`.
+Run a single test with a Swift Testing filter, e.g. `swift test --filter 'GroupsAreSortedRuleTests/projectWithoutGroupsSorted\(\)'`, or a whole suite with `swift test --filter GroupsAreSortedRuleTests`. The filter is a regex over the fully qualified name, so the trailing `()` needs escaping (or just drop it and match a prefix).
 
 CI (`.github/workflows/ci.yml`) runs `mise run test` on both `macos-latest` and `ubuntu-latest`, so changes must build and pass on Linux as well as macOS.
 
@@ -50,7 +50,7 @@ Note that per-rule severity is decoded into `Configuration.rules` but nothing cu
 
 ## Tests
 
-Tests are XCTest (not swift-testing) and fixture-driven. Each rule test loads a checked-in `.xcodeproj` from `Tests/XCLintTests/TestData/` via `Bundle.module.testDataURL(named:)`, builds an `XCLinter.Environment` directly, invokes the rule struct alone (bypassing `ruleMap` and configuration), and asserts violations are empty or non-empty. Fixtures are usually paired — a passing and a failing project per rule — and are copied as bundle resources by `.copy("TestData")` in `Package.swift`.
+Tests use Swift Testing (`@Suite` structs, `@Test` methods, `#expect`/`#require`) and are fixture-driven. Each rule test builds an environment around a checked-in `.xcodeproj` from `Tests/XCLintTests/TestData/` via `XCLinter.Environment.fixture(named:)`, invokes the rule struct alone (bypassing `ruleMap` and configuration), and asserts violations are empty or non-empty. Fixtures are usually paired — a passing and a failing project per rule — and are copied as bundle resources by `.copy("TestData")` in `Package.swift`.
 
 Testing a new rule generally means authoring a new fixture `.xcodeproj` (often just a hand-edited `project.pbxproj`) rather than writing more Swift.
 

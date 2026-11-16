@@ -1,66 +1,42 @@
-import XCTest
+import Testing
 
 @testable import XCLinting
-import XcodeProj
 
-final class GroupsAreSortedRuleTests: XCTestCase {
-	func testProjectWithGroupsSorted() throws {
-		let url = try Bundle.module.testDataURL(named: "SortedGroups.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+@Suite
+struct GroupsAreSortedRuleTests {
+	@Test
+	func projectWithGroupsSorted() throws {
+		let env = try XCLinter.Environment.fixture(named: "SortedGroups.xcodeproj")
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertTrue(violations.isEmpty)
+
+		#expect(violations.isEmpty)
 	}
 
-	func testProjectWithoutGroupsSorted() throws {
-		let url = try Bundle.module.testDataURL(named: "UnsortedGroups.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+	@Test
+	func projectWithoutGroupsSorted() throws {
+		let env = try XCLinter.Environment.fixture(named: "UnsortedGroups.xcodeproj")
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertFalse(violations.isEmpty)
+
+		#expect(!violations.isEmpty)
 	}
 
-	func testProjectWithoutGroupsSortedByReference() throws {
-		let url = try Bundle.module.testDataURL(named: "SortedGroupsByReference.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+	@Test
+	func projectWithoutGroupsSortedByReference() throws {
+		let env = try XCLinter.Environment.fixture(named: "SortedGroupsByReference.xcodeproj")
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertTrue(violations.isEmpty)
+
+		#expect(violations.isEmpty)
 	}
 
-	func testGroupSortedWhereExtensionsMatters() throws {
-		let url = try Bundle.module.testDataURL(named: "FileOrderedWithExtensions.xcodeproj")
-
-		let project = try XcodeProj(pathString: url.path)
-
-		let env = XCLinter.Environment(
-			project: project,
-			projectRootURL: url,
-			configuration: Configuration()
-		)
+	@Test
+	func groupSortedWhereExtensionsMatters() throws {
+		let env = try XCLinter.Environment.fixture(named: "FileOrderedWithExtensions.xcodeproj")
 
 		let violations = try GroupsAreSortedRule().run(env)
-		XCTAssertTrue(violations.isEmpty)
+
+		#expect(violations.isEmpty)
 	}
 }
